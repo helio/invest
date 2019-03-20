@@ -1,0 +1,14 @@
+{
+  "name": "invest-platrofm",
+  "version": "1.0.0",
+  "repository": "git@github.com:helio/invest.git",
+  "author": "Christoph Buchli <christoph@helio.exchange>",
+  "license": "MIT",
+  "devDependencies": {
+  },
+  "scripts": {
+  },
+  "resolutions": {
+    "jquery": "3.2.1"
+  }
+}
