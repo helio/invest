@@ -34,8 +34,8 @@ jobs:
     - run:
         name: deploy
         command: |
-          export DEPLOY_USERNAME=panelpreview
-          if [[ "${CIRCLE_BRANCH}" = 'master' ]]; then DEPLOY_USERNAME=panelproto; fi
+          export DEPLOY_USERNAME=investprev
+          if [[ "${CIRCLE_BRANCH}" = 'master' ]]; then DEPLOY_USERNAME=invest; fi
           mkdir ~/.ssh || rm -f ~/.ssh/known_hosts
           mv ./.circleci/known_hosts ~/.ssh/
           rsync -rptgoDzL --delete src www cli-config.php composer.* ${DEPLOY_USERNAME}@nbf01.opsserver.ch:.
