@@ -34,8 +34,8 @@ jobs:
     - run:
         name: deploy
         command: |
-          export DEPLOY_USERNAME=investprev
-          if [[ "${CIRCLE_BRANCH}" = 'master' ]]; then DEPLOY_USERNAME=invest; fi
+          export DEPLOY_USERNAME=panelpreview
+          if [[ "${CIRCLE_BRANCH}" = 'master' ]]; then DEPLOY_USERNAME=panelproto; fi
           mkdir ~/.ssh || rm -f ~/.ssh/known_hosts
           mv ./.circleci/known_hosts ~/.ssh/
           rsync -rptgoDzL --delete src www cli-config.php composer.* ${DEPLOY_USERNAME}@nbf01.opsserver.ch:.
@@ -49,42 +49,11 @@ jobs:
           ssh ${DEPLOY_USERNAME}@nbf01.opsserver.ch "sudo /usr/sbin/service php72-fpm reload"
 
 
-  runners:
-    docker:
-    - image: docker:17.05.0-ce-git
-
-    working_directory: ~/repo
-
-    steps:
-    - checkout
-    - setup_remote_docker
-    - run:
-        name: Build application Docker image
-        command: |
-          docker login -u panel -p ${GITLAB_TOKEN} gitlab.idling.host:4567
-          START_DIR="$(pwd -P)"
-          for img in $(find src -name Dockerfile); do
-            cd "${START_DIR}/$(dirname $img)"
-            IMGNAME=gitlab.idling.host:4567/helio/runner/$(echo $(basename $(dirname $img)) | tr '[:upper:]' '[:lower:]')
-            TAGNAME=$(echo ${CIRCLE_BRANCH} | tr '/' '_')
-            docker build -t ${IMGNAME}:${TAGNAME} . && docker push "${IMGNAME}:${TAGNAME}"
-            if [ "${CIRCLE_BRANCH}" == "master" ]; then
-              docker tag "${IMGNAME}:${TAGNAME}" "${IMGNAME}:latest" && docker push "${IMGNAME}:latest"
-            fi
-          done
-
-
 workflows:
   version: 2
   build:
     jobs:
     - code:
-        filters:
-          branches:
-            only:
-            - master
-            - development
-    - runners:
         filters:
           branches:
             only:
