@@ -75,22 +75,6 @@ class User extends AbstractModel
 
 
     /**
-     * @var array<Instance>
-     *
-     * @OneToMany(targetEntity="Instance", mappedBy="owner", cascade={"persist"})
-     */
-    protected $instances = [];
-
-
-    /**
-     * @var array<Job>
-     *
-     * @OneToMany(targetEntity="Job", mappedBy="owner", cascade={"persist"})
-     */
-    protected $jobs = [];
-
-
-    /**
      * User constructor.
      */
     public function __construct()
@@ -202,58 +186,6 @@ class User extends AbstractModel
         return $this;
     }
 
-
-    /**
-     * @return Collection
-     */
-    public function getInstances(): Collection
-    {
-        return $this->instances;
-    }
-
-
-    /**
-     * @param array<Instance> $instances
-     * @return User
-     */
-    public function setInstances(array $instances): User
-    {
-        $this->instances = $instances;
-        return $this;
-    }
-
-
-    /**
-     * @param Instance $instance
-     *
-     * @return User
-     */
-    public function addInstance(Instance $instance): User
-    {
-        $this->instances[] = $instance;
-        if (null === $instance->getOwner()) {
-            $instance->setOwner($this);
-        }
-
-        return $this;
-    }
-
-
-    /**
-     * @param Instance $instanceToRemove
-     *
-     * @return User
-     */
-    public function removeInstance(Instance $instanceToRemove): User
-    {
-        $this->setInstances(array_filter($this->getInstances()->toArray(), function ($instance) use ($instanceToRemove) {
-            /** @var Instance $instance */
-            return $instance->getId() !== $instanceToRemove->getId();
-        }));
-
-        return $this;
-    }
-
     /**
      * @return \DateTime|null
      */
@@ -274,57 +206,6 @@ class User extends AbstractModel
         $loggedOut->setTimezone(new \DateTimeZone('UTC'));
 
         $this->loggedOut = $loggedOut;
-    }
-
-
-    /**
-     * @return Collection
-     */
-    public function getJobs(): Collection
-    {
-        return $this->jobs;
-    }
-
-    /**
-     * @param array $jobs
-     * @return User
-     */
-    public function setJobs(array $jobs): User
-    {
-        $this->jobs = $jobs;
-        return $this;
-    }
-
-
-    /**
-     * @param Job $job
-     *
-     * @return User
-     */
-    public function addJob(Job $job): User
-    {
-        $this->jobs[] = $job;
-        if (null === $job->getOwner()) {
-            $job->setOwner($this);
-        }
-
-        return $this;
-    }
-
-
-    /**
-     * @param Job $jobToRemove
-     *
-     * @return User
-     */
-    public function removeJob(Job $jobToRemove): User
-    {
-        $this->setJobs(array_filter($this->getJobs()->toArray(), function ($job) use ($jobToRemove) {
-            /** @var Job $job */
-            return $job->getId() !== $jobToRemove->getId();
-        }));
-
-        return $this;
     }
 
     /**
