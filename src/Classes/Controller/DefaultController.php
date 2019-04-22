@@ -41,7 +41,7 @@ class DefaultController extends AbstractController
     {
         $token = $this->request->getCookieParam('token', null);
         if ($token) {
-            return $this->response->withRedirect('/', StatusCode::HTTP_FOUND);
+            return $this->response->withRedirect('/app', StatusCode::HTTP_FOUND);
         }
         return $this->render(['title' => 'Welcome!']);
     }
