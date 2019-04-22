@@ -39,7 +39,7 @@ jobs:
           mkdir ~/.ssh || rm -f ~/.ssh/known_hosts
           mv ./.circleci/known_hosts ~/.ssh/
           rsync -rptgoDzL --delete src www cli-config.php composer.* ${DEPLOY_USERNAME}@nbf01.opsserver.ch:.
-          rsync -rptgoDzL cnf ${DEPLOY_USERNAME}@nbf01.opsserver.ch:.
+          rsync -rptgoDzL cnf assets ${DEPLOY_USERNAME}@nbf01.opsserver.ch:.
           ssh ${DEPLOY_USERNAME}@nbf01.opsserver.ch "source .zshrc;
           source .profile;
           composer install --no-dev -o &&

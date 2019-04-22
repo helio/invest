@@ -16,6 +16,7 @@ use Doctrine\{
 
 use Doctrine\Common\Collections\ArrayCollection;
 use Helio\Invest\Utility\ArrayUtility;
+use Helio\Invest\Utility\InvestUtility;
 use Helio\Invest\Utility\JwtUtility;
 use Helio\Invest\Utility\ServerUtility;
 
@@ -217,5 +218,12 @@ class User extends AbstractModel
 
         $this->status = $status;
         return $this;
+    }
+
+    /**
+     * @return array
+     */
+    public function getFiles(): array {
+        return InvestUtility::getUserFiles($this->getId());
     }
 }

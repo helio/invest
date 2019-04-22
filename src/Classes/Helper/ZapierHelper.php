@@ -31,6 +31,8 @@ class ZapierHelper
      */
     public function submitUserToZapier(User $user): bool
     {
+        // TODO: Re-activate this method
+        return true;
         $publicUserObject = json_encode([
             'name' => $user->getName(),
             'email' => $user->getEmail()

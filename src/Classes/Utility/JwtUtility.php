@@ -50,7 +50,7 @@ class JwtUtility
             'secret' => ServerUtility::get('JWT_SECRET'),
             'rules' => [
                 new RequestPathRule([
-                    'path' => '/(panel|api)'
+                    'path' => '/(app|api)'
                 ]),
                 new RequestMethodRule(['passthrough' => ['OPTIONS']]),
             ],
@@ -125,34 +125,6 @@ class JwtUtility
 
 
     /**
-     * @param Instance $instance
-     *
-     * @return string
-     * @throws \Exception
-     */
-    public static function generateInstanceIdentificationToken(Instance $instance): string
-    {
-        $salt = bin2hex(random_bytes(4));
-
-        return self::getSaltedTokenHash($instance->getId(), $instance->getCreated()->getTimestamp(), $salt);
-    }
-
-
-    /**
-     * @param Instance $instance
-     * @param string $claim
-     *
-     * @return bool
-     */
-    public static function verifyInstanceIdentificationToken(Instance $instance, string $claim): bool
-    {
-        $salt = explode(':', $claim)[0];
-
-        return $claim === self::getSaltedTokenHash($instance->getId(), $instance->getCreated()->getTimestamp(), $salt);
-    }
-
-
-    /**
      * @param User $user
      * @return string
      * @throws \Exception
@@ -179,43 +151,15 @@ class JwtUtility
 
 
     /**
-     * @param Job $job
-     *
-     * @return string
-     * @throws \Exception
-     */
-    public static function generateJobIdentificationToken(Job $job): string
-    {
-        $salt = bin2hex(random_bytes(4));
-
-        return self::getSaltedTokenHash($job->getId(), $job->getCreated()->getTimestamp(), $salt);
-    }
-
-
-    /**
-     * @param Job $job
-     * @param string $claim
-     *
-     * @return bool
-     */
-    public static function verifyJobIdentificationToken(Job $job, string $claim): bool
-    {
-        $salt = explode(':', $claim)[0];
-
-        return $claim === self::getSaltedTokenHash($job->getId(), $job->getCreated()->getTimestamp(), $salt);
-    }
-
-
-    /**
      * @param int $id
-     * @param int $timstamp
+     * @param int $timestamp
      * @param string $salt
      *
      * @return string
      */
-    protected static function getSaltedTokenHash(int $id, int $timstamp, string $salt): string
+    protected static function getSaltedTokenHash(int $id, int $timestamp, string $salt): string
     {
-        $token = sha1($id . $timstamp . $salt . ServerUtility::get('JWT_SECRET'));
+        $token = sha1($id . $timestamp . $salt . ServerUtility::get('JWT_SECRET'));
 
         return $salt . ':' . $token;
     }

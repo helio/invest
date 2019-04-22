@@ -14,29 +14,26 @@
                         The Autonomous Cloud Computing Exchange
                     </h1>
                     <p>
-                        <strong>Have some idling servers?</strong> Utilize their computing capacity today.
-                        <br>
-                        <strong>Have some heavy computing tasks?</strong> Run them cheap and easy.
+                        <strong>Request Access</strong> This Website can only be viewd with a valid link.
+                        If you have forgotten your link or you want to request access, please enter your E-Mail address below.
                     </p>
                 </header>
                 <div class="row">
                     <div class="col-sm-10 col-sm-offset-1 col-md-8 col-md-offset-2 col-lg-8 col-lg-offset-2">
                         <div class="card-pf">
                             <?php
-                            /** @var Helio\Panel\Model\User $user */
+                            /** @var Helio\Invest\Model\User $user */
                             if (isset($user) && $user->getId()) {
                                 echo '<div>';
                                 if ($user->isActive()) {
                                     echo <<<EOSM
                     Thank you for signing in.<br />
                     You have received an E-Mail to the submitted address containing your login link.<br/>
-                    This link is valid for 1 week.
 EOSM;
                                 } else {
                                     echo <<<EORM
                     Thank you for your registration.<br />
-                    You have received an E-Mail to the submitted address containing your login link.<br/>
-                    This link is valid for 1 week.
+                    We will review your request and send you an invitation link soon.<br/>
 EORM;
                                 }
                                 echo '</div>';
@@ -52,7 +49,7 @@ EOLO;
                                 } else {
                                     echo <<<EOF
                             <header class="login-pf-header">
-                                <h1>Sign up or Log In to Your Account</h1>
+                                <h1>Request Access</h1>
                             </header>
                             <form id="register" action="user/login" method="POST">
                                 <div class="form-group">

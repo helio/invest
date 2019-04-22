@@ -2,7 +2,9 @@
 
 namespace Helio\Invest\Utility;
 
+use Grpc\Server;
 use Helio\Invest\App;
+use Psr\Http\Message\ResponseInterface;
 
 class ServerUtility
 {
@@ -241,5 +243,28 @@ class ServerUtility
     public static function getLastExecutedShellCommand(): string
     {
         return self::$lastExecutedShellCommand;
+    }
+
+
+    /**
+     * @param string $file
+     * @param ResponseInterface $response
+     * @return ResponseInterface
+     */
+    public static function provideFileForDownload(string $file, ResponseInterface $response): ResponseInterface
+    {
+        $fileName = self::getApplicationRootPath(['assets']) . DIRECTORY_SEPARATOR . $file;
+        if (!file_exists($fileName)) {
+            throw new \RuntimeException('File does not exist');
+        }
+        return $response
+            ->withoutHeader('Content-Description')->withHeader('Content-Description', 'File Transfer')
+            ->withoutHeader('Content-Type')->withHeader('Content-Type', 'application/octet-stream')
+            ->withoutHeader('Content-Disposition')->withHeader('Content-Disposition', 'attachment; filename="' . basename($fileName) . '"')
+            ->withoutHeader('Expires')->withHeader('Expires', '0')
+            ->withoutHeader('Cache-Control')->withHeader('Cache-Control', 'must-revalidate')
+            ->withoutHeader('Pragma')->withHeader('Pragma', 'public')
+            ->withoutHeader('Content-Length')->withHeader('Content-Length', filesize($fileName))
+            ->withBody(new \GuzzleHttp\Psr7\LazyOpenStream($fileName, 'r'));
     }
 }

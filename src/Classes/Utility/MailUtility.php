@@ -14,7 +14,7 @@ class MailUtility
      */
     protected static $confirmationMailContent = <<<EOM
     Hi %s 
-    Welcome to helio. Please klick this link to log in:
+    Welcome to helio investors platform. Please click this link to log in:
     %s
 EOM;
 
@@ -26,11 +26,11 @@ EOM;
      * @return bool
      * @throws \Exception
      */
-    public static function sendConfirmationMail(User $user, string $linkLifetime = '+1 week'): bool
+    public static function sendConfirmationMail(User $user, string $linkLifetime = '+1 year'): bool
     {
         $content = vsprintf(self::$confirmationMailContent, [
             $user->getName(),
-            ServerUtility::getBaseUrl() . 'panel?token=' .
+            ServerUtility::getBaseUrl() . 'app?token=' .
             JwtUtility::generateToken($user->getId(), $linkLifetime)['token']
         ]);
 
@@ -56,6 +56,12 @@ EOM;
      */
     public static function sendMailToAdmin(string $content = ''): bool
     {
-        return @mail('team@opencomputing.cloud', 'Admin Notification from Panel', $content, 'From: hello@idling.host', '-f hello@idling.host');
+
+        // write mail to PHPStorm Console
+        if (PHP_SAPI === 'cli-server' && ServerUtility::get('SITE_ENV') !== 'PROD') {
+            LogHelper::logToConsole('Admin Mail: ' . $content);
+        }
+
+        return @mail('team@helio.exchange', 'Admin Notification from Invest Platform', $content, 'From: no-reply@helio.exchange', '-f no-reply@helio.exchange');
     }
 }

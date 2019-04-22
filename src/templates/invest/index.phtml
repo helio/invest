@@ -1,0 +1,32 @@
+<?php
+
+use Helio\Invest\Model\User;
+
+/** @var array $files */
+/** @var User $user */
+?>
+
+<div>
+    <iframe src="https://player.vimeo.com/video/330772125" width="640" height="360" frameborder="0"
+            allow="autoplay; fullscreen" allowfullscreen></iframe>
+    <p><a href="https://vimeo.com/330772125">The Helio Vision</a> from <a href="https://vimeo.com/helioag">Helio</a> on
+        <a href="https://vimeo.com">Vimeo</a>.</p>
+</div>
+<h2>General documents</h2>
+<ul>
+    <?php
+    foreach ($files as $file) {
+        echo '<li><a href="/app/get/file/' . $file . '">' . $file . '</a></li>';
+    }
+    ?>
+</ul>
+<h2>Your documents</h2>
+
+<ul>
+
+    <?php
+    foreach ($user->getFiles() as $file) {
+        echo '<li><a href="/app/get/file/personal/' . $file . '">' . $file . '</a></li>';
+    }
+    ?>
+</ul>
