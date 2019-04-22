@@ -3,56 +3,54 @@
 <?php \Helio\Invest\Helper\ViewHelper::includeShared('head'); ?>
 <body>
 <div id="notificationContainer"></div>
-
-<div class="login-pf-page">
-    <div class="container-fluid">
+<div class="business-hero">
+    <div class="container">
         <div class="row">
             <div class="col-sm-8 col-sm-offset-2 col-md-6 col-md-offset-3 col-lg-6 col-lg-offset-3">
                 <header class="login-pf-page-header">
                     <img class="login-pf-brand" src="/images/logo.svg" alt=" logo"/>
-                    <h1 class="display">
+                    <h2 class="display">
                         The Autonomous Cloud Computing Exchange
-                    </h1>
+                    </h2>
                     <p>
                         <strong>Request Access</strong> This Website can only be viewd with a valid link.
-                        If you have forgotten your link or you want to request access, please enter your E-Mail address below.
+                        If you have forgotten your link or you want to request access, please enter your E-Mail address
+                        below.
                     </p>
                 </header>
-                <div class="row">
-                    <div class="col-sm-10 col-sm-offset-1 col-md-8 col-md-offset-2 col-lg-8 col-lg-offset-2">
-                        <div class="card-pf">
-                            <?php
-                            /** @var Helio\Invest\Model\User $user */
-                            if (isset($user) && $user->getId()) {
-                                echo '<div>';
-                                if ($user->isActive()) {
-                                    echo <<<EOSM
+                <div>
+                    <?php
+                    /** @var Helio\Invest\Model\User $user */
+                    if (isset($user) && $user->getId()) {
+                        echo '<div>';
+                        if ($user->isActive()) {
+                            echo <<<EOSM
                     Thank you for signing in.<br />
                     You have received an E-Mail to the submitted address containing your login link.<br/>
 EOSM;
-                                } else {
-                                    echo <<<EORM
+                        } else {
+                            echo <<<EORM
                     Thank you for your registration.<br />
                     We will review your request and send you an invitation link soon.<br/>
 EORM;
-                                }
-                                echo '</div>';
-                            } else {
-                                if (isset($loggedOut)) {
+                        }
+                        echo '</div>';
+                    } else {
+                        if (isset($loggedOut)) {
 
-                                    echo <<<EOLO
+                            echo <<<EOLO
                             <header class="login-pf-header">
-                                <h1>Logged out!</h1>
+                                <h2>Logged out!</h2>
                             </header>
                                 <div>Thank you, come again.</div>'
 EOLO;
-                                } else {
-                                    echo <<<EOF
+                        } else {
+                            echo <<<EOF
                             <header class="login-pf-header">
-                                <h1>Request Access</h1>
+                                <h3 style="color: white;">Request Access</h3>
                             </header>
                             <form id="register" action="user/login" method="POST">
-                                <div class="form-group">
+                                <div class="form-group" style="color:white;">
                                     <label class="sr-only" for="exampleInputEmail1">What is your Email address?</label>
                                     <input type="email" class="form-control  input-lg" id="email" name="email"
                                            placeholder="Email address">
@@ -66,15 +64,13 @@ EOLO;
                                         We'll never share your email address with anyone.
                                     </strong>
                                 </div>
-                                <button type="submit" class="btn btn-primary btn-block btn-lg">Log In / Sign Up</button>
+                                <button type="submit" class="btn-pill btn-pill-primary btn-pill-lg">Log In / Sign Up</button>
                             </form>
 EOF;
-                                }
-                            }
-                            ?>
-                            <br/>
-                        </div>
-                    </div>
+                        }
+                    }
+                    ?>
+                    <br/>
                 </div>
             </div>
         </div>
