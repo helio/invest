@@ -75,7 +75,7 @@ class DefaultController extends AbstractController
         $user = $this->dbHelper->getRepository(User::class)->findOneByEmail($this->params['email']);
         if (!$user) {
             $user = new User();
-            $user->setEmail($this->params['email'])->setCreated();
+            $user->setEmail($this->params['email'])->setCreated()->setLatestAction()->setName(substr($this->params['email'], 0, strpos($this->params['email'], '@')));
             $this->dbHelper->persist($user);
             $this->dbHelper->flush($user);
             if (!$this->zapierHelper->submitUserToZapier($user)) {

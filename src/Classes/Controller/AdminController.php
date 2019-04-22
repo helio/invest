@@ -53,7 +53,7 @@ class AdminController extends AbstractController
         $this->dbHelper->flush($user);
 
         // setup user
-        MailUtility::sendConfirmationMail($user);
+        MailUtility::sendConfirmationMail($user, 'activation');
         InvestUtility::createUserDir($user->getId());
         return $this->render(['title' => 'done!']);
     }

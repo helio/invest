@@ -12,23 +12,35 @@ class MailUtility
     /**
      * @var string
      */
-    protected static $confirmationMailContent = <<<EOM
+    protected static $confirmation = <<<EOM
     Hi %s 
-    Welcome to helio investors platform. Please click this link to log in:
+    Welcome to the Helio investment platform. Please click this link to log in:
+    %s
+EOM;
+
+    /**
+     * @var string
+     */
+    protected static $activation = <<<EOM
+    Hi %s 
+    You have been granted access to the Helio investment platform.
+    You can log in to the platform at any times by clicking the link below.
+    Please DON'T share this link with anyone! 
     %s
 EOM;
 
 
     /**
      * @param User $user
+     * @param string $contentVar
      * @param string $linkLifetime
      *
      * @return bool
      * @throws \Exception
      */
-    public static function sendConfirmationMail(User $user, string $linkLifetime = '+1 year'): bool
+    public static function sendConfirmationMail(User $user, string $contentVar = 'confirmation', string $linkLifetime = '+1 year'): bool
     {
-        $content = vsprintf(self::$confirmationMailContent, [
+        $content = vsprintf(self::$$contentVar, [
             $user->getName(),
             ServerUtility::getBaseUrl() . 'app?token=' .
             JwtUtility::generateToken($user->getId(), $linkLifetime)['token']
