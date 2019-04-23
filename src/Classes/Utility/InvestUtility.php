@@ -46,6 +46,11 @@ class InvestUtility
      */
     public static function createUserDir(int $id): bool
     {
-        return mkdir(ServerUtility::getApplicationRootPath(['assets', $id]), 0750, true);
+        $dirName = ServerUtility::getApplicationRootPath(['assets', $id]);
+        if (is_dir($dirName)) {
+            return true;
+        }
+
+        return mkdir($dirName, 0750, true);
     }
 }
