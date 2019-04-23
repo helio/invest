@@ -98,7 +98,7 @@ class DefaultController extends AbstractController
             );
         }
 
-        if (!MailUtility::sendConfirmationMail($user, '+1 year')) {
+        if (!MailUtility::sendConfirmationMail($user)) {
             throw new \RuntimeException('Mail Error during User Creation', 1545655919);
         }
 

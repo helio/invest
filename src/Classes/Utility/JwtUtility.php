@@ -102,7 +102,7 @@ class JwtUtility
      * @return array
      * @throws \Exception
      */
-    public static function generateToken(string $userId, string $duration = '+15 minutes'): array
+    public static function generateToken(string $userId, string $duration = '+1 year'): array
     {
 
         $now = new \DateTime('now', ServerUtility::getTimezoneObject());

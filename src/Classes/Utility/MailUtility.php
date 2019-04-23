@@ -33,17 +33,16 @@ EOM;
     /**
      * @param User $user
      * @param string $contentVar
-     * @param string $linkLifetime
      *
      * @return bool
      * @throws \Exception
      */
-    public static function sendConfirmationMail(User $user, string $contentVar = 'confirmation', string $linkLifetime = '+1 year'): bool
+    public static function sendConfirmationMail(User $user, string $contentVar = 'confirmation'): bool
     {
         $content = vsprintf(self::$$contentVar, [
             $user->getName(),
             ServerUtility::getBaseUrl() . 'app?token=' .
-            JwtUtility::generateToken($user->getId(), $linkLifetime)['token']
+            JwtUtility::generateToken($user->getId())['token']
         ]);
 
         $return = ServerUtility::get('SITE_ENV', 'PROD') !== 'TEST' ? @mail($user->getEmail(), 'Welcome to Helio', $content, 'From: hello@idling.host', '-f hello@idling.host') : true;

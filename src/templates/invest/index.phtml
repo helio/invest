@@ -23,33 +23,47 @@
         ?>
 
 
-        <iframe src="https://player.vimeo.com/video/330772125" width="640" height="360" frameborder="0"
-                allow="autoplay; fullscreen" allowfullscreen></iframe>
-        <p>
-            Please don't share these documents directly, always invite people to this platform.<br/>
-            We'll update the documents from time to time. You'll get notified when new versions or new documents will be
-            available here.
-        </p>
-        <h2>General documents</h2>
-        <ul>
-            <?php
-            foreach ($files as $file) {
-                echo '<li><a target="_blank" alt="Download ' . $file . '" href="/app/get/file/' . $file . '">' . (array_key_exists($file, $labelsForFiles) ? $labelsForFiles[$file] : $file) . '</a></li>';
-            }
-            ?>
-        </ul>
-        <h2>Your documents</h2>
+        <div class="row">
+            <div class="col text-center">
+                <iframe src="https://player.vimeo.com/video/330772125" width="960" height="540" frameborder="0"
+                        allow="autoplay; fullscreen" allowfullscreen></iframe>
+            </div>
+        </div>
+        <br/><br/>
+        <div class="row">
+            <div class="col">
+                <div class="alert alert-warning" role="alert">
+                    <strong>Please</strong>
+                    don't share these documents directly, always invite people to this platform.<br/>
+                    We'll update the documents from time to time. You'll get notified when new versions or new documents
+                    will be available here.
+                </div>
+            </div>
+        </div>
+        <div class="row">
+            <div class="col-lg-6">
+                <h2>General documents</h2>
+                <ul class="list-group">
+                    <?php
+                    foreach ($files as $file) {
+                        echo '<li class="list-group-item"><a target="_blank" alt="Download ' . $file . '" href="/app/get/file/' . $file . '">' . (array_key_exists($file, $labelsForFiles) ? $labelsForFiles[$file] : $file) . '</a></li>';
+                    }
+                    ?>
+                </ul>
+            </div>
+            <div class="col-lg-6">
+                <h2>Your personal documents</h2>
 
-        <ul>
+                <ul class="list-group">
 
-            <?php
-            foreach ($user->getFiles() as $file) {
-                echo '<li><a target="_blank" alt="Download ' . $file . '" href="/app/get/file/personal/' . $file . '">' . (array_key_exists($file, $labelsForFiles) ? $labelsForFiles[$file] : $file) . '</a></li>';
-            }
-            ?>
-        </ul>
-
-
+                    <?php
+                    foreach ($user->getFiles() as $file) {
+                        echo '<li class="list-group-item"><a target="_blank" alt="Download ' . $file . '" href="/app/get/file/personal/' . $file . '">' . (array_key_exists($file, $labelsForFiles) ? $labelsForFiles[$file] : $file) . '</a></li>';
+                    }
+                    ?>
+                </ul>
+            </div>
+        </div>
     </div>
 </div>
 </body>
