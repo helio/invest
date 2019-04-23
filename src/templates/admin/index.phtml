@@ -11,7 +11,14 @@
             /** @var string $title */
             echo $title;
             ?>
-        </p></div>
+        </p>
+        <?php
+            if (isset($userId) && $userId > 0) {
+                echo "UserId of new user: $userId<br />Command: ";
+                echo "<pre>rsync -ravz &lt;document&gt; invest@nbf01.opsserver.ch:assets/$userId/</pre>";
+            }
+        ?>
+    </div>
 </div>
 </body>
 </html>

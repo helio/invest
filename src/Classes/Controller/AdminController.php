@@ -65,7 +65,7 @@ class AdminController extends AbstractController
             throw new \RuntimeException('Error during creating user dir', 1556012784);
         }
 
-        return $this->render(['title' => 'done!']);
+        return $this->render(['title' => 'done!', 'userId' => $user->getId()]);
     }
 
 }
