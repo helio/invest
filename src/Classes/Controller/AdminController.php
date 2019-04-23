@@ -47,6 +47,12 @@ class AdminController extends AbstractController
      */
     public function activateUserAction(string $email): ResponseInterface
     {
+        /** @var User $user */
+        $user = $this->dbHelper->getRepository(User::class)->findOneByEmail($email);
+        if ($user) {
+            return $this->render(['title' => 'Warning! User already in database.', 'userId' => $user->getId()]);
+        }
+
         $user = new User();
         $user->setEmail($email)->setActive(true)->setCreated()->setLatestAction()->setName(substr($email, 0, strpos($email, '@')));
         $this->dbHelper->persist($user);
