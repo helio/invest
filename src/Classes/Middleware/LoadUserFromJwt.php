@@ -57,10 +57,6 @@ class LoadUserFromJwt implements MiddlewareInterface
                     }
                 }
 
-                // mark all tokens older than the current as invalid so they can't be used anymore.
-                if (!\array_key_exists('block_reauth', $request->getCookieParams())) {
-                    $user->setLoggedOut((new \DateTime('now', ServerUtility::getTimezoneObject()))->setTimestamp($container['jwt']['iat']));
-                }
                 $dbHelper->merge($user);
                 $dbHelper->flush();
 

@@ -74,18 +74,8 @@ class DefaultController extends AbstractController
         /** @var User $user */
         $user = $this->dbHelper->getRepository(User::class)->findOneByEmail($this->params['email']);
         if (!$user) {
-            $user = new User();
-            $user->setEmail($this->params['email'])->setCreated()->setLatestAction()->setName(substr($this->params['email'], 0, strpos($this->params['email'], '@')));
-            $this->dbHelper->persist($user);
-            $this->dbHelper->flush($user);
-            if (!$this->zapierHelper->submitUserToZapier($user)) {
-                throw new \RuntimeException('Zapier Error during User Creation', 1546940197);
-            }
-        }
-
-        if (!$user->isActive()) {
-            $content = 'New user requested access: ' . $user->getEmail() . "\nClick to activate (make sure you're logged in  as admin first):\n" .
-                ServerUtility::getBaseUrl() . 'app/admin/user/activate/' . $user->getId();
+            $content = 'New user requested access: ' . $this->params['email'] . "\nClick to activate (make sure you're logged in  as admin first):\n" .
+                ServerUtility::getBaseUrl() . 'app/admin/user/activate/' . $this->params['email'];
             if (!MailUtility::sendMailToAdmin($content)) {
                 throw new \RuntimeException('Mail Error during User Creation', 1555743209);
             }

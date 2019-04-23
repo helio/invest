@@ -39,22 +39,32 @@ class AdminController extends AbstractController
     }
 
     /**
-     * @param int $id
+     * @param string $email
      * @return ResponseInterface
-     * @Route("/user/activate/{id:[\d]+}", methods={"GET"})
+     * @Route("/user/activate/{email:.+}", methods={"GET"})
      * @throws \Exception
+     * @throws \GuzzleHttp\Exception\GuzzleException
      */
-    public function activateUserAction(int $id): ResponseInterface
+    public function activateUserAction(string $email): ResponseInterface
     {
-        /** @var User $user */
-        $user = $this->dbHelper->getRepository(User::class)->findOneById($id);
-        $user->setActive(true);
+        $user = new User();
+        $user->setEmail($email)->setActive(true)->setCreated()->setLatestAction()->setName(substr($email, 0, strpos($email, '@')));
         $this->dbHelper->persist($user);
         $this->dbHelper->flush($user);
 
+        if (!$this->zapierHelper->submitUserToZapier($user)) {
+            throw new \RuntimeException('Zapier Error during User Creation', 1546940197);
+        }
+
         // setup user
-        MailUtility::sendConfirmationMail($user, 'activation');
-        InvestUtility::createUserDir($user->getId());
+        if (!MailUtility::sendConfirmationMail($user, 'activation')) {
+            throw new \RuntimeException('Could not send confirmation mail to user', 1556012770);
+        }
+
+        if (!InvestUtility::createUserDir($user->getId())) {
+            throw new \RuntimeException('Error during creating user dir', 1556012784);
+        }
+
         return $this->render(['title' => 'done!']);
     }
 
