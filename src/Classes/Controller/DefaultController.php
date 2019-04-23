@@ -9,6 +9,7 @@ use Helio\Invest\Helper\ZapierHelper;
 use Helio\Invest\Model\User;
 use Helio\Invest\Utility\CookieUtility;
 use Helio\Invest\Utility\InvestUtility;
+use Helio\Invest\Utility\JwtUtility;
 use Helio\Invest\Utility\MailUtility;
 use Helio\Invest\Utility\ServerUtility;
 use http\Exception\InvalidArgumentException;
@@ -143,18 +144,13 @@ class DefaultController extends AbstractController
             throw new \RuntimeException('Error during creating user dir', 1556012784);
         }
 
-        // setup user
-        if (!MailUtility::sendConfirmationMail($user, 'activation')) {
-            throw new \RuntimeException('Could not send confirmation mail to user', 1556012770);
-        }
-
         /** @var UploadedFileInterface $uploadedFile */
         $uploadedFile = $this->request->getUploadedFiles()['file'];
         if ($uploadedFile && $uploadedFile->getError() === UPLOAD_ERR_OK) {
             $uploadedFile->moveTo(ServerUtility::getApplicationRootPath(['assets', $user->getId()]) . DIRECTORY_SEPARATOR . 'Helio_Convertible.pdf');
         }
 
-        return $this->json(['title' => 'success!', 'success' => true]);
+        return $this->json(['title' => 'success', 'success' => true, 'userId' => $user->getId(), 'link' => ServerUtility::getBaseUrl() . 'app?token=' . JwtUtility::generateToken($user->getId())['token']]);
 
     }
 }

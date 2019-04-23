@@ -18,6 +18,12 @@
                 echo "<pre>rsync -ravz &lt;document&gt; invest@nbf01.opsserver.ch:assets/$userId/</pre>";
             }
         ?>
+        <div>
+            <p>
+                The link via which the investor can see their documents etc. would be:<br />
+                <a href="<?php echo $link ?? ''; ?>" target="_blank"><?php echo $link ?? ''; ?></a>
+            </p>
+        </div>
     </div>
 </div>
 </body>

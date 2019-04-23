@@ -6,7 +6,9 @@ use Helio\Invest\Controller\Traits\AuthenticatedController;
 use Helio\Invest\Controller\Traits\TypeBrowserController;
 use Helio\Invest\Model\User;
 use Helio\Invest\Utility\InvestUtility;
+use Helio\Invest\Utility\JwtUtility;
 use Helio\Invest\Utility\MailUtility;
+use Helio\Invest\Utility\ServerUtility;
 use Psr\Http\Message\ResponseInterface;
 
 
@@ -58,12 +60,7 @@ class AdminController extends AbstractController
             throw new \RuntimeException('Error during creating user dir', 1556012784);
         }
 
-        // setup user
-        if (!MailUtility::sendConfirmationMail($user, 'activation')) {
-            throw new \RuntimeException('Could not send confirmation mail to user', 1556012770);
-        }
-
-        return $this->render(['title' => 'done!', 'userId' => $user->getId()]);
+        return $this->render(['title' => 'done!', 'userId' => $user->getId(), 'link' => ServerUtility::getBaseUrl() . 'app?token=' . JwtUtility::generateToken($user->getId())['token']]);
     }
 
 }

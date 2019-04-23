@@ -19,6 +19,7 @@ class MailUtility
 EOM;
 
     /**
+     * TODO: This is currently not really used since the emails should be personalised a little.
      * @var string
      */
     protected static $activation = <<<EOM
