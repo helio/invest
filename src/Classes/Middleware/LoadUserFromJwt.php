@@ -57,6 +57,7 @@ class LoadUserFromJwt implements MiddlewareInterface
                     }
                 }
 
+                $user->setLatestAction();
                 $dbHelper->merge($user);
                 $dbHelper->flush();
 
