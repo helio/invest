@@ -105,6 +105,8 @@ class DefaultController extends AbstractController
     }
 
     /**
+     * Function called by Zapier hook
+     *
      * @return ResponseInterface
      *
      * @Route("user/add", methods={"POST","GET"}, name="user.autocreate")
@@ -120,11 +122,11 @@ class DefaultController extends AbstractController
             throw new \InvalidArgumentException('Invalid token supplied');
         }
 
-        $this->requiredParameterCheck(['email' => FILTER_SANITIZE_EMAIL]);
-        $this->optionalParameterCheck(['name' => FILTER_SANITIZE_STRING]);
+        $data = [];
+        mb_parse_str($this->request->getParsedBody()['data'], $data);
 
-        $email = $this->params['email'];
-        $name = $this->params['name'] ?? substr($email, 0, strpos($email, '@'));
+        $email = $data['email'];
+        $name = $data['name'] . ' ' . $data['surname'];
 
         /** @var User $user */
         $user = $this->dbHelper->getRepository(User::class)->findOneByEmail($email);
