@@ -18,6 +18,7 @@ ZAPIER_HOOK_URL=/hooks/catch/1234/blahd3d/
 There are a lot more variables that you can set, they are pretty obiously named...
 ```bash
 JWT_SECRET=random secret for jwt etc.
+ZAPIER_SECRET=random secret for zapier hooks
 SITE_ENV
 DB_USERNAME
 DB_NAME

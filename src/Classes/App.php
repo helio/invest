@@ -4,7 +4,6 @@ namespace Helio\Invest;
 
 use Helio\Invest\Helper\DbHelper;
 use Helio\Invest\Helper\LogHelper;
-use Helio\Invest\Helper\ZapierHelper;
 use Helio\Invest\Utility\JwtUtility;
 use Helio\Invest\Utility\ServerUtility;
 use Slim\Http\Request;
@@ -24,7 +23,6 @@ class App extends \Slim\App
      * @param Request|null $request
      * @param array $middleWaresToApply
      * @param string $dbHelperClassName
-     * @param string $zapierHelperClassName
      * @param string $logHelperClassName
      * @return App
      * @throws \Exception
@@ -34,7 +32,6 @@ class App extends \Slim\App
         Request $request = null,
         array $middleWaresToApply = [JwtUtility::class],
         string $dbHelperClassName = DbHelper::class,
-        string $zapierHelperClassName = ZapierHelper::class,
         string $logHelperClassName = LogHelper::class
     ): App
     {
@@ -50,11 +47,9 @@ class App extends \Slim\App
             /**
              * @var DbHelper $dbHelperClassName
              * @var LogHelper $logHelperClassName
-             * @var ZapierHelper $zapierHelperClassName
              */
             self::$instance->getContainer()['logger'] = $logHelperClassName::get();
             self::$instance->getContainer()['dbHelper'] = $dbHelperClassName::getInstance();
-            self::$instance->getContainer()['zapierHelper'] = $zapierHelperClassName::getInstance();
             self::$instance->getContainer()['renderer'] = new \Slim\Views\PhpRenderer(APPLICATION_ROOT . '/src/templates');
 
             if ($request) {

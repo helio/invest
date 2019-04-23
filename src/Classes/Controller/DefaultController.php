@@ -2,13 +2,18 @@
 
 namespace Helio\Invest\Controller;
 
+use Grpc\Server;
 use Helio\Invest\Controller\Traits\ParametrizedController;
 use Helio\Invest\Controller\Traits\TypeBrowserController;
+use Helio\Invest\Helper\ZapierHelper;
 use Helio\Invest\Model\User;
 use Helio\Invest\Utility\CookieUtility;
+use Helio\Invest\Utility\InvestUtility;
 use Helio\Invest\Utility\MailUtility;
 use Helio\Invest\Utility\ServerUtility;
+use http\Exception\InvalidArgumentException;
 use Psr\Http\Message\ResponseInterface;
+use Psr\Http\Message\UploadedFileInterface;
 use Slim\Http\StatusCode;
 
 
@@ -97,5 +102,58 @@ class DefaultController extends AbstractController
                 'title' => 'Login link sent'
             ]
         );
+    }
+
+    /**
+     * @return ResponseInterface
+     *
+     * @Route("user/add", methods={"POST","GET"}, name="user.autocreate")
+     * @throws \Exception
+     */
+    public function AutoCreateUserAction(): ResponseInterface
+    {
+        $this->requiredParameterCheck(['auth' => FILTER_SANITIZE_STRING]);
+
+        [$salt, $token] = explode(':', $this->params['auth']);
+
+        if (ServerUtility::getHashOfString($salt . ':' . ServerUtility::get('ZAPIER_SECRET', 'ERROR')) !== $token) {
+            throw new \InvalidArgumentException('Invalid token supplied');
+        }
+
+        $this->requiredParameterCheck(['email' => FILTER_SANITIZE_EMAIL]);
+        $this->optionalParameterCheck(['name' => FILTER_SANITIZE_STRING]);
+
+        $email = $this->params['email'];
+        $name = $this->params['name'] ?? substr($email, 0, strpos($email, '@'));
+
+        /** @var User $user */
+        $user = $this->dbHelper->getRepository(User::class)->findOneByEmail($email);
+        if ($user) {
+            return $this->render(['title' => 'Warning! User already in database.', 'userId' => $user->getId()], StatusCode::HTTP_NOT_ACCEPTABLE);
+        }
+
+        $user = new User();
+        $user->setEmail($email)->setActive(true)->setCreated()->setLatestAction()->setName($name);
+        $this->dbHelper->persist($user);
+        $this->dbHelper->flush($user);
+
+        if (!InvestUtility::createUserDir($user->getId())) {
+            throw new \RuntimeException('Error during creating user dir', 1556012784);
+        }
+
+        // setup user
+        if (!MailUtility::sendConfirmationMail($user, 'activation')) {
+            throw new \RuntimeException('Could not send confirmation mail to user', 1556012770);
+        }
+
+        /** @var UploadedFileInterface $uploadedFile */
+        $uploadedFile = $this->request->getUploadedFiles()['file'];
+        if ($uploadedFile && $uploadedFile->getError() === UPLOAD_ERR_OK) {
+            $uploadedFile->moveTo(ServerUtility::getApplicationRootPath(['assets', $user->getId()]) . $uploadedFile->getClientFilename());
+            return $this->render();
+        }
+
+        return $this->render(['title' => 'success!', 'success' => true]);
+
     }
 }

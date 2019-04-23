@@ -58,17 +58,13 @@ class AdminController extends AbstractController
         $this->dbHelper->persist($user);
         $this->dbHelper->flush($user);
 
-        if (!$this->zapierHelper->submitUserToZapier($user)) {
-            throw new \RuntimeException('Zapier Error during User Creation', 1546940197);
+        if (!InvestUtility::createUserDir($user->getId())) {
+            throw new \RuntimeException('Error during creating user dir', 1556012784);
         }
 
         // setup user
         if (!MailUtility::sendConfirmationMail($user, 'activation')) {
             throw new \RuntimeException('Could not send confirmation mail to user', 1556012770);
-        }
-
-        if (!InvestUtility::createUserDir($user->getId())) {
-            throw new \RuntimeException('Error during creating user dir', 1556012784);
         }
 
         return $this->render(['title' => 'done!', 'userId' => $user->getId()]);
