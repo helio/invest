@@ -2,16 +2,12 @@
 
 namespace Helio\Invest\Controller;
 
-use Helio\Invest\App;
 use Helio\Invest\Controller\Traits\AuthenticatedController;
 use Helio\Invest\Controller\Traits\TypeBrowserController;
-use Helio\Invest\Helper\DbHelper;
 use Helio\Invest\Model\User;
 use Helio\Invest\Utility\InvestUtility;
 use Helio\Invest\Utility\MailUtility;
-use Helio\Invest\Utility\ServerUtility;
 use Psr\Http\Message\ResponseInterface;
-use Slim\Http\StatusCode;
 
 
 /**
@@ -54,7 +50,7 @@ class AdminController extends AbstractController
         }
 
         $user = new User();
-        $user->setEmail($email)->setActive(true)->setCreated()->setLatestAction()->setName(substr($email, 0, strpos($email, '@')));
+        $user->setEmail($email)->setActive(true)->setCreated()->setName(substr($email, 0, strpos($email, '@')));
         $this->dbHelper->persist($user);
         $this->dbHelper->flush($user);
 

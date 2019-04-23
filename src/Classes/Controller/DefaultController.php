@@ -135,7 +135,7 @@ class DefaultController extends AbstractController
         }
 
         $user = new User();
-        $user->setEmail($email)->setActive(true)->setCreated()->setLatestAction()->setName($name);
+        $user->setEmail($email)->setActive(true)->setCreated()->setName($name);
         $this->dbHelper->persist($user);
         $this->dbHelper->flush($user);
 
