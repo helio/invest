@@ -6,7 +6,6 @@ use Helio\Invest\Controller\Traits\ParametrizedController;
 use Helio\Invest\Controller\Traits\TypeBrowserController;
 use Helio\Invest\Model\User;
 use Helio\Invest\Utility\CookieUtility;
-use Helio\Invest\Utility\JwtUtility;
 use Helio\Invest\Utility\MailUtility;
 use Helio\Invest\Utility\ServerUtility;
 use Psr\Http\Message\ResponseInterface;
