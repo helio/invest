@@ -43,12 +43,13 @@ trait ParametrizedController
      */
     public function requiredParameterCheck(array $params): void
     {
+        $this->optionalParameterCheck($params);
+
         foreach ($params as $key => $type) {
-            if (!array_key_exists($key, $this->params)) {
+            if (!array_key_exists($key, $this->params) || $this->params[$key] === '') {
                 throw new \RuntimeException("Param ${key} not set", 1545654109);
             }
         }
-        $this->optionalParameterCheck($params);
     }
 
     /**
