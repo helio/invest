@@ -151,11 +151,10 @@ class DefaultController extends AbstractController
         /** @var UploadedFileInterface $uploadedFile */
         $uploadedFile = $this->request->getUploadedFiles()['file'];
         if ($uploadedFile && $uploadedFile->getError() === UPLOAD_ERR_OK) {
-            $uploadedFile->moveTo(ServerUtility::getApplicationRootPath(['assets', $user->getId()]) . $uploadedFile->getClientFilename());
-            return $this->render();
+            $uploadedFile->moveTo(ServerUtility::getApplicationRootPath(['assets', $user->getId()]) . DIRECTORY_SEPARATOR . 'Helio_Convertible.pdf');
         }
 
-        return $this->render(['title' => 'success!', 'success' => true]);
+        return $this->json(['title' => 'success!', 'success' => true]);
 
     }
 }
