@@ -131,11 +131,10 @@ class DefaultController extends AbstractController
 
         /** @var User $user */
         $user = $this->dbHelper->getRepository(User::class)->findOneByEmail($email);
-        if ($user) {
-            return $this->render(['title' => 'Warning! User already in database.', 'userId' => $user->getId()], StatusCode::HTTP_NOT_ACCEPTABLE);
+        if (!$user) {
+            $user = new User();
         }
 
-        $user = new User();
         $user->setEmail($email)->setActive(true)->setCreated()->setName($name);
         $this->dbHelper->persist($user);
         $this->dbHelper->flush($user);
