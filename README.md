@@ -1,7 +1,7 @@
-# Panel Prototype
+# Invest Document sharing site
 
-This is a prototype of a user panel including an API.
-Detailed documentation will follow, for now it's just nerdnotes.
+This is a prototype platform to share our investment documents
+Detailed documentation will follow, for now it's just internal notes.
 
 # ENV Variables etc.
 You can configure a lot of stuff through ENV-Variables. Here's how.
