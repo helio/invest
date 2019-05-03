@@ -58,6 +58,9 @@ class LoadUserFromJwt implements MiddlewareInterface
                 }
 
                 $user->setLatestAction();
+                if (($container['jwt']['guest'] ?? false) === true) {
+                    $user->setGuestClickCount();
+                }
                 $dbHelper->merge($user);
                 $dbHelper->flush();
 

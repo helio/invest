@@ -11,14 +11,17 @@
 
         /** @var array $files */
         /** @var User $user */
+        /** @var bool $isGuest */
+        /** @var string $guestLink */
         $labelsForFiles = [
             'Milestones.pdf' => 'Financing Milestones',
             'Strategy.pdf' => 'Strategy Paper',
             'Helio_two_pager.pdf' => 'Helio on One Page and Process Map',
             'Helio_pitch_deck.pdf' => 'Helio Investors Pitch Deck',
             'Financial_plan.pdf' => 'Financial Plan',
-            'Factsheet_convertible_notes.pdf' => 'Factsheet: Convertible Notes',
-            'Helio_Convertible.pdf' => 'Convertible Notes Contract'
+            'Factsheet_convertible_notes.pdf' => 'Factsheet: Convertible Loans',
+            'Helio_Convertible.pdf' => 'Convertible Loans Contract',
+            'Signed_Convertible.pdf' => 'Scan of signed Convertible Contract'
         ];
 
         ?>
@@ -36,6 +39,11 @@
         <div class="row">
             <div class="col-lg-6">
                 <h2>General documents</h2>
+                <?php
+                if (!$isGuest) {
+                    echo '<div class="alert alert-warning" role="alert"><strong>You can share</strong> these documents with <a href="' . $guestLink . '">this link</a>.</div>';
+                }
+                ?>
                 <ul class="list-group">
                     <?php
                     foreach ($files as $file) {
@@ -47,30 +55,24 @@
             <div class="col-lg-6">
                 <h2>Your personal documents</h2>
 
-                <ul class="list-group">
+                <?php
+                if ($isGuest) {
+                    echo '<div class="alert alert-warning" role="alert"><strong>Please</strong> <a href="mailto:team@helio.exchange">let us know</a> if you want to register.</div>';
 
-                    <?php
+                } else {
+
+                    echo '<div class="alert alert-warning" role="alert"><strong>Please don\'t share</strong> these documents.</div>';
+
+                    echo '<ul class="list-group">';
                     foreach ($user->getFiles() as $file) {
                         echo '<li class="list-group-item"><a target="_blank" alt="Download ' . $file . '" href="/app/get/file/personal/' . $file . '">' . (array_key_exists($file, $labelsForFiles) ? $labelsForFiles[$file] : $file) . '</a></li>';
                     }
-                    ?>
-                </ul>
+                    echo '</ul>';
+                }
+                ?>
             </div>
         </div>
-
         <br/><br/>
-
-        <div class="row">
-            <div class="col">
-                <div class="alert alert-warning" role="alert">
-                    <strong>Please</strong>
-                    don't share these documents directly, always invite people to this platform.<br/>
-                    We'll update the documents from time to time. You'll get notified when new versions or new documents
-                    will be available here.
-                </div>
-                <br /><br />
-            </div>
-        </div>
     </div>
 </div>
 </body>

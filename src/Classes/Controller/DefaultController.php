@@ -79,9 +79,7 @@ class DefaultController extends AbstractController
         /** @var User $user */
         $user = $this->dbHelper->getRepository(User::class)->findOneByEmail($this->params['email']);
         if (!$user) {
-            $content = 'New user requested access: ' . $this->params['email'] . "\nClick to activate (make sure you're logged in  as admin first):\n" .
-                ServerUtility::getBaseUrl() . 'app/admin/user/activate/' . $this->params['email'];
-            if (!MailUtility::sendMailToAdmin($content)) {
+            if (!MailUtility::sendMailToAdmin('New user requested access: ' . $this->params['email'])) {
                 throw new \RuntimeException('Mail Error during User Creation', 1555743209);
             }
 

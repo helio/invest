@@ -15,6 +15,8 @@ use Doctrine\{
 };
 
 use Doctrine\Common\Collections\ArrayCollection;
+use Helio\Invest\App;
+use Helio\Invest\Helper\LogHelper;
 use Helio\Invest\Utility\ArrayUtility;
 use Helio\Invest\Utility\InvestUtility;
 use Helio\Invest\Utility\JwtUtility;
@@ -73,6 +75,13 @@ class User extends AbstractModel
      * @Column(type="datetimetz", nullable=true)
      */
     protected $loggedOut;
+
+    /**
+     * @var int
+     *
+     * @Column
+     */
+    protected $guestClickCount;
 
 
     /**
@@ -221,9 +230,39 @@ class User extends AbstractModel
     }
 
     /**
+     * @return int
+     */
+    public function getGuestClickCount(): int
+    {
+        return $this->guestClickCount;
+    }
+
+    /**
+     * @param int $guestClickCount
+     * @return User
+     */
+    public function setGuestClickCount(int $guestClickCount = null): User
+    {
+        if ($guestClickCount === null) {
+            $guestClickCount = ($this->guestClickCount ?? 0) + 1;
+        }
+        $this->guestClickCount = $guestClickCount;
+        return $this;
+    }
+
+    /**
      * @return array
      */
-    public function getFiles(): array {
+    public function getFiles(): array
+    {
+        try {
+        if (App::getApp()->getContainer()['jwt']['guest'] ?? false === true) {
+            return [];
+        }
+        } catch (\Exception $e) {
+            LogHelper::warn('Error during getContainer: ' . $e->getMessage());
+            return [];
+        }
         return InvestUtility::getUserFiles($this->getId());
     }
 }

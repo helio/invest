@@ -35,32 +35,4 @@ class AdminController extends AbstractController
     {
         return 'admin';
     }
-
-    /**
-     * @param string $email
-     * @return ResponseInterface
-     * @Route("/user/activate/{email:.+}", methods={"GET"})
-     * @throws \Exception
-     * @throws \GuzzleHttp\Exception\GuzzleException
-     */
-    public function activateUserAction(string $email): ResponseInterface
-    {
-        /** @var User $user */
-        $user = $this->dbHelper->getRepository(User::class)->findOneByEmail($email);
-        if ($user) {
-            return $this->render(['title' => 'Warning! User already in database.', 'userId' => $user->getId()]);
-        }
-
-        $user = new User();
-        $user->setEmail($email)->setActive(true)->setCreated()->setName(substr($email, 0, strpos($email, '@')));
-        $this->dbHelper->persist($user);
-        $this->dbHelper->flush($user);
-
-        if (!InvestUtility::createUserDir($user->getId())) {
-            throw new \RuntimeException('Error during creating user dir', 1556012784);
-        }
-
-        return $this->render(['title' => 'done!', 'userId' => $user->getId(), 'link' => ServerUtility::getBaseUrl() . 'app?token=' . JwtUtility::generateToken($user->getId())['token']]);
-    }
-
 }

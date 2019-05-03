@@ -4,11 +4,9 @@ namespace Helio\Invest\Utility;
 
 use Firebase\JWT\JWT;
 
-use Helio\Invest\Middleware\CustomApiTokenForUser;
 use Helio\Invest\Middleware\LoadUserFromJwt;
 use Helio\Invest\Middleware\TokenAttributeToCookie;
 use Helio\Invest\Middleware\ReAuthenticate;
-use Helio\Invest\Model\User;
 use Slim\App;
 use Slim\Http\StatusCode;
 use Tuupola\Base62;
@@ -75,8 +73,6 @@ class JwtUtility
             }
         ]));
 
-        $app->add(new CustomApiTokenForUser());
-
         $app->add(new TokenAttributeToCookie());
 
         $app->add(new CorsMiddleware([
@@ -98,11 +94,12 @@ class JwtUtility
     /**
      * @param string $userId
      * @param string $duration
+     * @param bool $guestAccessLink
      *
      * @return array
      * @throws \Exception
      */
-    public static function generateToken(string $userId, string $duration = '+1 year'): array
+    public static function generateToken(string $userId, string $duration = '+1 year', bool $guestAccessLink = false): array
     {
 
         $now = new \DateTime('now', ServerUtility::getTimezoneObject());
@@ -114,6 +111,11 @@ class JwtUtility
             'jti' => $jti,
             'uid' => $userId
         ];
+
+        if ($guestAccessLink) {
+            $payload['guest'] = true;
+        }
+
         $secret = ServerUtility::get('JWT_SECRET');
         $token = JWT::encode($payload, $secret, 'HS256');
 
@@ -121,46 +123,5 @@ class JwtUtility
             'token' => $token,
             'expires' => $future->getTimestamp()
         ];
-    }
-
-
-    /**
-     * @param User $user
-     * @return string
-     * @throws \Exception
-     */
-    public static function generateUserIdentificationToken(User $user): string
-    {
-        $salt = bin2hex(random_bytes(4));
-
-        return self::getSaltedTokenHash($user->getId(), $user->getCreated()->getTimestamp(), $salt);
-    }
-
-
-    /**
-     * @param User $user
-     * @param string $claim
-     * @return bool
-     */
-    public static function verifyUserIdentificationToken(User $user, string $claim): bool
-    {
-        $salt = explode(':', $claim)[0];
-
-        return $claim === self::getSaltedTokenHash($user->getId(), $user->getCreated()->getTimestamp(), $salt);
-    }
-
-
-    /**
-     * @param int $id
-     * @param int $timestamp
-     * @param string $salt
-     *
-     * @return string
-     */
-    protected static function getSaltedTokenHash(int $id, int $timestamp, string $salt): string
-    {
-        $token = sha1($id . $timestamp . $salt . ServerUtility::get('JWT_SECRET'));
-
-        return $salt . ':' . $token;
     }
 }

@@ -2,9 +2,11 @@
 
 namespace Helio\Invest\Controller;
 
+use Helio\Invest\App;
 use Helio\Invest\Controller\Traits\AuthenticatedController;
 use Helio\Invest\Controller\Traits\TypeBrowserController;
 use Helio\Invest\Utility\InvestUtility;
+use Helio\Invest\Utility\JwtUtility;
 use Helio\Invest\Utility\ServerUtility;
 use Psr\Http\Message\ResponseInterface;
 
@@ -35,10 +37,20 @@ class InvestController extends AbstractController
     /**
      * @return ResponseInterface
      * @Route("", methods={"GET"})
+     * @throws \Exception
      */
     public function indexAction(): ResponseInterface
     {
-        return $this->render(['user' => $this->user, 'files' => InvestUtility::getSharedFiles()]);
+        $data = [
+            'user' => $this->user,
+            'files' => InvestUtility::getSharedFiles(),
+            'guestLink' => ServerUtility::getBaseUrl() . 'app?token=' . JwtUtility::generateToken($this->user->getId(), '+ 1 year', true)['token'],
+            'isGuest' => false
+        ];
+        if (App::getApp()->getContainer()['jwt']['guest'] ?? false === true) {
+            $data['isGuest'] = true;
+        }
+        return $this->render($data);
     }
 
     /**
