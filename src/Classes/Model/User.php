@@ -81,7 +81,7 @@ class User extends AbstractModel
      *
      * @Column
      */
-    protected $guestClickCount;
+    protected $guestClickCount = 0;
 
 
     /**
@@ -90,8 +90,6 @@ class User extends AbstractModel
     public function __construct()
     {
         parent::__construct();
-        $this->instances = new ArrayCollection();
-        $this->jobs = new ArrayCollection();
     }
 
 
@@ -212,7 +210,7 @@ class User extends AbstractModel
         if (!$loggedOut) {
             $loggedOut = new \DateTime('now', ServerUtility::getTimezoneObject());
         }
-        // Fix Timezone because Doctrine assumes persistend DateTime Objects are always UTC
+        // Fix Timezone because Doctrine assumes persistent DateTime Objects are always UTC
         $loggedOut->setTimezone(new \DateTimeZone('UTC'));
 
         $this->loggedOut = $loggedOut;
