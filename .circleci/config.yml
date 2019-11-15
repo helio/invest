@@ -20,6 +20,8 @@ jobs:
 
     - run: composer install -n -q -o
     - run: yarn
+    - run: if ! [[ -d vendor/apt ]]; then mkdir -p vendor/apt; fi
+    - run: if [[ ! -e /usr/bin/rsync ]]; then if ! [[ -d vendor/apt/archives ]]; then sudo apt-get install --download-only rsync && sudo cp -R /var/cache/apt vendor/ && sudo chown -R circleci:circleci vendor/apt; fi; sudo dpkg -i vendor/apt/archives/*.deb; fi
 
     - save_cache:
         paths:
