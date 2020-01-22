@@ -144,7 +144,16 @@ class DefaultController extends AbstractController
         /** @var UploadedFileInterface $uploadedFile */
         $uploadedFile = $this->request->getUploadedFiles()['file'];
         if ($uploadedFile && $uploadedFile->getError() === UPLOAD_ERR_OK) {
-            $uploadedFile->moveTo(ServerUtility::getApplicationRootPath(['assets', $user->getId()]) . DIRECTORY_SEPARATOR . 'Helio_Convertible.pdf');
+            $round_suffix = array_key_exists('round', $this->params) ? filter_var($this->params['round'], FILTER_CALLBACK, function ($value) {
+                $matches = [];
+                if (preg_match_all('/[a-zA-Z 0-9]/', trim($value), $matches) > 0) {
+                    return '_' . str_replace('\s', '_', implode($matches[0]));
+                }
+                return '';
+            }) : '';
+            $filename = 'Helio_Convertible' . $round_suffix . '.pdf';
+
+            $uploadedFile->moveTo(ServerUtility::getApplicationRootPath(['assets', $user->getId()]) . DIRECTORY_SEPARATOR . $filename);
         }
 
         return $this->json(['title' => 'success', 'success' => true, 'userId' => $user->getId(), 'link' => ServerUtility::getBaseUrl() . 'app?token=' . JwtUtility::generateToken($user->getId())['token']]);
