@@ -146,7 +146,7 @@ class DefaultController extends AbstractController
         /** @var UploadedFileInterface $uploadedFile */
         $uploadedFile = $this->request->getUploadedFiles()['file'];
         if ($uploadedFile && $uploadedFile->getError() === UPLOAD_ERR_OK) {
-            $round_suffix = array_key_exists('round', $data) ? filter_var($data['round'], FILTER_CALLBACK, function ($value) {
+            $round_suffix = array_key_exists('round', $data) ? filter_var($data['round'], FILTER_CALLBACK, ['options' => function ($value) {
                 $matches = [];
                 $result = preg_match_all('/[a-zA-Z 0-9]/', trim($value), $matches);
                 LogHelper::debug('preg_match_result: ' . __LINE__ . '. Result was ' . $result . ' and matches were ' . print_r($matches, true));
@@ -154,7 +154,7 @@ class DefaultController extends AbstractController
                     return '_' . str_replace('\s', '_', implode($matches[0]));
                 }
                 return '';
-            }) : '';
+            }]) : '';
             $filename = 'Helio_Convertible' . $round_suffix . '.pdf';
 
             $uploadedFile->moveTo(ServerUtility::getApplicationRootPath(['assets', $user->getId()]) . DIRECTORY_SEPARATOR . $filename);
