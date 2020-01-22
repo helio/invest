@@ -23,7 +23,7 @@ use Psr\Log\LogLevel;
  * @method static addAlert($message)
  * @method static addEmergency($message)
  * @method static log($message)
- * @method static debug($message)
+ * :q@method static debug($message)
  * @method static info($message)
  * @method static notice($message)
  * @method static warn($message)

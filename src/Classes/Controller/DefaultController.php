@@ -5,6 +5,7 @@ namespace Helio\Invest\Controller;
 use Grpc\Server;
 use Helio\Invest\Controller\Traits\ParametrizedController;
 use Helio\Invest\Controller\Traits\TypeBrowserController;
+use Helio\Invest\Helper\LogHelper;
 use Helio\Invest\Helper\ZapierHelper;
 use Helio\Invest\Model\User;
 use Helio\Invest\Utility\CookieUtility;
@@ -123,6 +124,7 @@ class DefaultController extends AbstractController
 
         $data = [];
         mb_parse_str($this->request->getParsedBody()['data'], $data);
+        LogHelper::debug('Data received: ' . print_r($data, true));
 
         $email = filter_var($data['email'], FILTER_SANITIZE_EMAIL);
         $name = filter_var($data['name'] . ' ' . $data['surname'], FILTER_SANITIZE_STRING);
@@ -146,9 +148,11 @@ class DefaultController extends AbstractController
         if ($uploadedFile && $uploadedFile->getError() === UPLOAD_ERR_OK) {
             $round_suffix = array_key_exists('round', $data) ? filter_var($data['round'], FILTER_CALLBACK, function ($value) {
                 $matches = [];
-                if (preg_match_all('/[a-zA-Z 0-9]/', trim($value), $matches) > 0) {
+                $result = preg_match_all('/[a-zA-Z 0-9]/', trim($value), $matches);
+                if ($result > 0) {
                     return '_' . str_replace('\s', '_', implode($matches[0]));
                 }
+                LogHelper::debug('No preg_match_all at line ' . __LINE__ . '. Result was ' . $result . ' and matches were ' . print_r($matches, true));
                 return '';
             }) : '';
             $filename = 'Helio_Convertible' . $round_suffix . '.pdf';
