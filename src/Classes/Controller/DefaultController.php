@@ -149,10 +149,10 @@ class DefaultController extends AbstractController
             $round_suffix = array_key_exists('round', $data) ? filter_var($data['round'], FILTER_CALLBACK, function ($value) {
                 $matches = [];
                 $result = preg_match_all('/[a-zA-Z 0-9]/', trim($value), $matches);
+                LogHelper::debug('preg_match_result: ' . __LINE__ . '. Result was ' . $result . ' and matches were ' . print_r($matches, true));
                 if ($result > 0) {
                     return '_' . str_replace('\s', '_', implode($matches[0]));
                 }
-                LogHelper::debug('No preg_match_all at line ' . __LINE__ . '. Result was ' . $result . ' and matches were ' . print_r($matches, true));
                 return '';
             }) : '';
             $filename = 'Helio_Convertible' . $round_suffix . '.pdf';
