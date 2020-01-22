@@ -124,8 +124,8 @@ class DefaultController extends AbstractController
         $data = [];
         mb_parse_str($this->request->getParsedBody()['data'], $data);
 
-        $email = $data['email'];
-        $name = $data['name'] . ' ' . $data['surname'];
+        $email = filter_var($data['email'], FILTER_SANITIZE_EMAIL);
+        $name = filter_var($data['name'] . ' ' . $data['surname'], FILTER_SANITIZE_STRING);
 
         /** @var User $user */
         $user = $this->dbHelper->getRepository(User::class)->findOneByEmail($email);
@@ -144,7 +144,7 @@ class DefaultController extends AbstractController
         /** @var UploadedFileInterface $uploadedFile */
         $uploadedFile = $this->request->getUploadedFiles()['file'];
         if ($uploadedFile && $uploadedFile->getError() === UPLOAD_ERR_OK) {
-            $round_suffix = array_key_exists('round', $this->params) ? filter_var($this->params['round'], FILTER_CALLBACK, function ($value) {
+            $round_suffix = array_key_exists('round', $data) ? filter_var($data['round'], FILTER_CALLBACK, function ($value) {
                 $matches = [];
                 if (preg_match_all('/[a-zA-Z 0-9]/', trim($value), $matches) > 0) {
                     return '_' . str_replace('\s', '_', implode($matches[0]));
