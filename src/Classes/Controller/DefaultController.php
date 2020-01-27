@@ -151,7 +151,7 @@ class DefaultController extends AbstractController
                 $result = preg_match_all('/[a-zA-Z 0-9]/', trim($value), $matches);
                 LogHelper::debug('preg_match_result: ' . __LINE__ . '. Result was ' . $result . ' and matches were ' . print_r($matches, true));
                 if ($result > 0) {
-                    return '_' . str_replace('\s', '_', implode($matches[0]));
+                    return '_' . str_replace(' ', '_', implode($matches[0]));
                 }
                 return '';
             }]) : '';
